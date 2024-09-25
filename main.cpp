@@ -6,7 +6,7 @@
 
 int main()
 {   
-    const char* title = "Simulator powered by Lumina";
+    const char* title = "lumina";
 
     const int fps = 60;
     const int tps = 1;
