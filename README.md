@@ -18,3 +18,11 @@ cd build
 cmake ..
 make
 ./execute_file
+
+Add this as submodule somewhere else
+
+cd path/to/your/project
+git submodule add https://github.com/smoksde/lumina.git external
+git submodule update --init --recursive
+git add external
+git commit -m "Added submodule lumina"
