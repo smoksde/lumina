@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 
-include_directories(external)
+include_directories(libs)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include)
 

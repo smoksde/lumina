@@ -5,8 +5,8 @@ Linux Ubuntu
 clone repository
 
 install cmake
-download sh installation file
-execute sh file.sh
+sudo apt-get update
+sudo apt-get install cmake
 
 install sdl2, glew
 
