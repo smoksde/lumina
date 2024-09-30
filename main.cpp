@@ -1,8 +1,9 @@
 #include "lumina.hpp"
-#include <vector>
 #include "agent.hpp"
 #include "energy.hpp"
 #include "render_buffer.hpp"
+
+#include <vector>
 
 int main()
 {   
