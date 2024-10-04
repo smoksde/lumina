@@ -15,3 +15,4 @@
 #include "node.hpp"
 #include "mesh.hpp"
 #include "font.hpp"
+#include "terminal.hpp"

@@ -9,8 +9,24 @@
 
 namespace lumina
 {
+
+    class Camera
+    {
+        public:
+        Camera()
+        {
+
+        }
+
+        virtual glm::mat4 getViewMatrix() = 0;
+        virtual glm::mat4 getProjectionMatrix() = 0;
+        virtual void processKeyboard(float delta_time) {};
+        virtual void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true) {};
+        virtual void processMouseScroll(float y_offset) {};
+        private:
+    };
     // TODO: Move input logic into Camera2D
-    class Camera2D
+    class Camera2D : public Camera
     {
         public:
 
@@ -39,6 +55,31 @@ namespace lumina
             position += translation_vector * -1.0f;
         }
 
+        glm::mat4 getViewMatrix() override
+        {
+            return glm::mat4(1.0f);
+        }
+
+        glm::mat4 getProjectionMatrix() override
+        {
+            return glm::ortho(0.0f, (float)width, (float)height, 0.0f);
+        }
+
+        void processKeyboard(float delta_time) override
+        {
+            return;
+        }
+
+        void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true) override
+        {
+            return;
+        }
+
+        void processMouseScroll(float y_offset) override
+        {
+            return;
+        }
+
         float getX(){return position[0];}
         
         float getY(){return position[1];}
@@ -46,7 +87,7 @@ namespace lumina
         float getZ(){return position[2];}
     };
 
-    class Camera3D
+    class Camera3D : public Camera
     {
     public:
         glm::vec3 position;
@@ -79,17 +120,17 @@ namespace lumina
 
         }
 
-        glm::mat4 getViewMatrix() const
+        glm::mat4 getViewMatrix() override
         {
             return glm::lookAt(position, position + front, up);
         }
 
-        glm::mat4 getProjectionMatrix() const
+        glm::mat4 getProjectionMatrix() override
         {
             return glm::perspective(glm::radians(fov), aspect_ratio, near_clip, far_clip);
         }
 
-        void processKeyboard(float delta_time)
+        void processKeyboard(float delta_time) override
         {
             velocity_change = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -126,7 +167,7 @@ namespace lumina
         }
 
 
-        void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true)
+        void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true) override
         {
             x_offset *= mouse_sensitivity;
             y_offset *= mouse_sensitivity;
@@ -145,7 +186,7 @@ namespace lumina
             updateCameraVectors();
         }
 
-        void processMouseScroll(float y_offset)
+        void processMouseScroll(float y_offset) override
         {
             fov -= y_offset;
             if (fov < 1.0f)

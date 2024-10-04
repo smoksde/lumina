@@ -22,7 +22,7 @@ namespace lumina
         std::list<std::shared_ptr<Node>> childs;
         std::shared_ptr<Mesh> mesh;
         std::shared_ptr<Shader> shader;
-        std::shared_ptr<Camera3D> camera; // Adjust such that its only Camera
+        std::shared_ptr<Camera> camera; // Adjust such that its only Camera
 
         glm::vec3 position;
         glm::vec3 rotation;
@@ -32,7 +32,7 @@ namespace lumina
 
         glm::mat4 global_transform;
 
-        Node(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, std::shared_ptr<Camera3D> camera)
+        Node(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
         : position(position), rotation(rotation), scale(scale), mesh(mesh), shader(shader), camera(camera)
         {
 
