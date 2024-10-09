@@ -16,3 +16,4 @@
 #include "mesh.hpp"
 #include "font.hpp"
 #include "terminal.hpp"
+#include "object.hpp"

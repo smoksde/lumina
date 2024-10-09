@@ -106,33 +106,19 @@ namespace lumina
         {
             glm::mat4 local_transform = glm::mat4(1.0f);
 
-            local_transform = glm::translate(local_transform, position);
+            local_transform = glm::scale(local_transform, scale);
             
             local_transform = glm::rotate(local_transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
             local_transform = glm::rotate(local_transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
             local_transform = glm::rotate(local_transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        
-            local_transform = glm::scale(local_transform, scale);
+            local_transform = glm::translate(local_transform, position);
 
             return local_transform;
         }
 
         void computeGlobalTransform()
         {
-            /*is_dirty = true;
-            if (is_dirty)
-            {
-                if (auto parent_ptr = parent.lock())
-                {
-                    global_transform = parent_ptr->global_transform * getLocalTransform();
-                }
-                else
-                {
-                    global_transform = getLocalTransform();
-                }
-                is_dirty = false;
-            }*/
             if (parent)
             {
                 global_transform = parent->global_transform * getLocalTransform();

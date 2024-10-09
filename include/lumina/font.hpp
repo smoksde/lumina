@@ -43,7 +43,7 @@ namespace lumina
 
             glGenTextures(1, &font_texture);
             glBindTexture(GL_TEXTURE_2D, font_texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, 512, 512, 0, GL_ALPHA, GL_UNSIGNED_BYTE, tmpBitmap);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, tmpBitmap);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glBindTexture(GL_TEXTURE_2D, 0);
 

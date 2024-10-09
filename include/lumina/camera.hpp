@@ -161,8 +161,8 @@ namespace lumina
                 velocity_change -= world_up;
             }
 
-            velocity += velocity_change * delta_time * velocity_change_factor;
-            velocity *= velocity_damper_factor * delta_time;
+            velocity += velocity_change * velocity_change_factor * 100.0f; // delta_time was included
+            velocity *= velocity_damper_factor; // delta_time was included
             position += velocity;
         }
 

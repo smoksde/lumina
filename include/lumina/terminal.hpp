@@ -21,7 +21,8 @@ namespace lumina
         bool selected = false;
 
         std::shared_ptr<Font> font_ptr;
-        std::shared_ptr<Viewport> viewport_ptr;
+        // std::shared_ptr<Viewport> viewport_ptr;
+        SDL_Window* window;
         
         std::string terminal_prefix = "TERMINAL > ";
         std::string terminal_input = "";
@@ -29,8 +30,8 @@ namespace lumina
         glm::vec3 weak_color = glm::vec3(0.4f, 0.4f, 0.4f);
         glm::vec3 highlight_color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-        Terminal(std::shared_ptr<Viewport> viewport_ptr, std::shared_ptr<Font> font_ptr)
-        : viewport_ptr(viewport_ptr), font_ptr(font_ptr)
+        Terminal(SDL_Window* window, std::shared_ptr<Font> font_ptr)
+        : window(window), font_ptr(font_ptr)
         {
             
         }
@@ -40,7 +41,7 @@ namespace lumina
             font_ptr->shader_ptr->bind();
             glUniform4f(glGetUniformLocation(font_ptr->shader_ptr->shader_id, "u_color"), terminal_string_color.x, terminal_string_color.y, terminal_string_color.z, 1.0f);
             int w, h;
-            SDL_GetWindowSize(viewport_ptr->window, &w, &h);
+            SDL_GetWindowSize(window, &w, &h);
             glm::mat4 ortho = glm::ortho(0.0f, (float)w, (float)h, 0.0f);
             glUniformMatrix4fv(glGetUniformLocation(font_ptr->shader_ptr->shader_id, "u_modelViewProj"), 1, GL_FALSE, glm::value_ptr(ortho));
             int x, y;
