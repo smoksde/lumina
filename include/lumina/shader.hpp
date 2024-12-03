@@ -72,26 +72,34 @@ namespace lumina
             return contents;
         }
         
-        GLuint createShader(const char* vertex_shader_filename, const char* fragment_shader_filename)
+        GLuint createShader(const char* vertex_shader_filename, const char* fragment_shader_filename = nullptr)
         {
             std::string vertex_shader_source = parse(vertex_shader_filename);
-            std::string fragment_shader_source = parse(fragment_shader_filename);
-
+            
             GLuint program = glCreateProgram();
-            GLuint vert = compile(vertex_shader_source, GL_VERTEX_SHADER);
-            GLuint frag = compile(fragment_shader_source, GL_FRAGMENT_SHADER);
+            
 
+            GLuint vert = compile(vertex_shader_source, GL_VERTEX_SHADER);
             glAttachShader(program, vert);
-            glAttachShader(program, frag);
+
+            GLuint frag = 0;
+            if (fragment_shader_filename && strlen(fragment_shader_filename) > 0)
+            {
+                std::string fragment_shader_source = parse(fragment_shader_filename);
+                frag = compile(fragment_shader_source, GL_FRAGMENT_SHADER);
+                glAttachShader(program, frag);
+            }
 
             glLinkProgram(program);
 
             glDetachShader(program, vert);
-            glDetachShader(program, frag);
-
             glDeleteShader(vert);
-            glDeleteShader(frag);
 
+            if (frag)
+            {
+                glDetachShader(program, frag);
+                glDeleteShader(frag);
+            }
             return program;
         }
     };
