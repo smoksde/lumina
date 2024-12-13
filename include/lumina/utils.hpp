@@ -19,7 +19,7 @@ namespace lumina
 }
 
 // TODO: Remove occurences in the other util files.
-inline void loadGeometryFromFile(const std::string& filepath, std::vector<float>& vertices, uint& num_vertices, std::vector<uint>& indices, uint& num_indices)
+inline void loadGeometryFromFile(const std::string& filepath, std::vector<float>& vertices, unsigned int& num_vertices, std::vector<unsigned int>& indices, unsigned int& num_indices)
 {
     num_vertices = 0;
     num_indices = 0;
@@ -52,9 +52,9 @@ inline void loadGeometryFromFile(const std::string& filepath, std::vector<float>
                     }
                     else
                     {
-                        indices.push_back(static_cast<uint>(std::stoi(x)));
-                        indices.push_back(static_cast<uint>(std::stoi(y)));
-                        indices.push_back(static_cast<uint>(std::stoi(z)));
+                        indices.push_back(static_cast<unsigned int>(std::stoi(x)));
+                        indices.push_back(static_cast<unsigned int>(std::stoi(y)));
+                        indices.push_back(static_cast<unsigned int>(std::stoi(z)));
                         num_indices += 3;
                     }
                 }
