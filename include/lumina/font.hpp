@@ -61,6 +61,25 @@ namespace lumina
             glBindVertexArray(0);
         }
 
+        glm::vec2 measureString(const char* text)
+        {
+            float x = 0.0f, y = 0.0f;
+            glm::vec2 size(0.0f, 0.0f);
+            while (*text)
+            {
+                if (*text >= 32 && *text < 128)
+                {
+                    stbtt_aligned_quad q;
+                    stbtt_GetBakedQuad(cdata, 512, 512, *text - 32, &x, &y, &q, 1);
+                    size.x = x;
+                    size.y = std::max(size.y, q.y1 - q.y0);
+                }
+                ++text;
+            }
+            std::cout << "measure string: " << size.x << " " << size.y << std::endl;
+            return size;
+        }
+
         glm::vec2 drawString(float x, float y, const char *text)
         {
             glBindVertexArray(font_vao);
