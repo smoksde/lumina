@@ -51,7 +51,7 @@ namespace lumina
             std::string terminal_render_string = "";
             terminal_render_string.append(terminal_prefix);
             terminal_render_string.append(terminal_input);
-            font_ptr->drawString(float(x+padding_left), float(y-padding_bottom), terminal_render_string.c_str()); 
+            font_ptr->drawString(float(x+padding_left), float(y-padding_bottom), terminal_render_string.c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)); 
             font_ptr->shader_ptr->unbind();
         }
 

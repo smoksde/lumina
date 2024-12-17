@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <GL/glew.h>
+#include <memory>
 
 #define STB_TRUETYPE_IMPLEMENTATION // if cpp then this in cpp
 #include "../libs/stb/stb_truetype.h"
@@ -9,6 +10,8 @@
 
 #include "defines.hpp"
 #include "shader.hpp"
+
+#include "lumina/lumina.hpp"
 
 namespace lumina
 {
@@ -43,7 +46,7 @@ namespace lumina
 
             glGenTextures(1, &font_texture);
             glBindTexture(GL_TEXTURE_2D, font_texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, tmpBitmap);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, tmpBitmap);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -80,7 +83,7 @@ namespace lumina
             return size;
         }
 
-        glm::vec2 drawString(float x, float y, const char *text)
+        glm::vec2 drawString(float x, float y, const char *text, glm::vec4 text_color)
         {
             glBindVertexArray(font_vao);
             glBindBuffer(GL_ARRAY_BUFFER, font_vertex_buffer_id);
@@ -97,6 +100,7 @@ namespace lumina
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, font_texture);
             glUniform1i(glGetUniformLocation(shader_ptr->shader_id, "u_texture"), 0);
+            glUniform4f(glGetUniformLocation(shader_ptr->shader_id, "u_color"), text_color.r, text_color.g, text_color.b, text_color.a);
 
             FontVertex *vData = font_vertex_buffer_data;
             uint32 numVertices = 0;
