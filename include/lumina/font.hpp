@@ -79,7 +79,6 @@ namespace lumina
                 }
                 ++text;
             }
-            std::cout << "measure string: " << size.x << " " << size.y << std::endl;
             return size;
         }
 
