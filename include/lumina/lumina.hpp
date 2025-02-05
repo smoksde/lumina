@@ -18,3 +18,4 @@
 #include "terminal.hpp"
 #include "object.hpp"
 #include "geometry.hpp"
+#include "ui.hpp"
