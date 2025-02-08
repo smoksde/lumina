@@ -1,5 +1,3 @@
-Prototype
-
 Setup
 
 Linux Ubuntu
