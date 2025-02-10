@@ -67,6 +67,8 @@ namespace lumina
             glUseProgram(0);
         }
 
+        GLuint shader_id;
+
     private:
 
         GLuint compile(std::string shader_source, GLenum type)
@@ -109,6 +111,7 @@ namespace lumina
             if(file == nullptr){
                 std::cout << "File " << filename << " not found" << std::endl;
                 return "";
+                return 0;
             }
 
             std::string contents;
