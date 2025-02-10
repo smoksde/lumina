@@ -3,14 +3,55 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "GL/glew.h"
+#include <unordered_map>
+#include <vector>
 
+#include "GL/glew.h"
 namespace lumina
 {
-    struct Shader{
-        Shader(const char* vertex_shader_filename, const char* fragment_shader_filename)
+    class Shader
+    {
+        public:
+        GLuint shader_id;
+
+        Shader(const std::unordered_map<std::string, std::string>& shader_paths)
         {
-            shader_id = createShader(vertex_shader_filename, fragment_shader_filename);
+            shader_id = glCreateProgram();
+
+            std::unordered_map<std::string, GLenum> shader_types = 
+            {
+                {"vertex", GL_VERTEX_SHADER},
+                {"fragment", GL_FRAGMENT_SHADER},
+                {"geometry", GL_GEOMETRY_SHADER},
+                {"compute", GL_COMPUTE_SHADER}
+            };
+
+            std::vector<GLuint> compiled_shaders;
+
+            for (const auto& [type, path] : shader_paths)
+            {
+                if (shader_types.find(type) != shader_types.end())
+                {
+                    GLuint shader = compile(parse(path.c_str()), shader_types[type]);
+                    if (shader != 0)
+                    {
+                        glAttachShader(shader_id, shader);
+                        compiled_shaders.push_back(shader);
+                    }
+                }
+                else
+                {
+                    std::cerr << "Warning: Unknown shader type '" << type << "' for shader program." << std::endl;
+                }
+            }
+
+            glLinkProgram(shader_id);
+            checkLinkErrors(shader_id);
+
+            for (GLuint shader : compiled_shaders)
+            {
+                glDeleteShader(shader);
+            }
         }
         virtual ~Shader()
         {
@@ -25,8 +66,6 @@ namespace lumina
         {
             glUseProgram(0);
         }
-
-        GLuint shader_id;
 
     private:
 
@@ -51,13 +90,25 @@ namespace lumina
             return id;
         }
 
+        void checkLinkErrors(GLuint program)
+        {
+            GLint success;
+            glGetProgramiv(program, GL_LINK_STATUS, &success);
+            if (!success)
+            {
+                char info_log[512];
+                glGetProgramInfoLog(program, 512, nullptr, info_log);
+                std::cerr << "Shader program linking failed: " << info_log << std::endl;
+            }
+        }
+
         std::string parse(const char* filename)
         {
             FILE* file;
             file = fopen(filename, "rb");
             if(file == nullptr){
                 std::cout << "File " << filename << " not found" << std::endl;
-                return 0;
+                return "";
             }
 
             std::string contents;

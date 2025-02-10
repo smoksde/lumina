@@ -19,6 +19,7 @@
 #include "object.hpp"
 #include "geometry.hpp"
 #include "ui.hpp"
+#include "loader.hpp"
 
 namespace lumina
 {
