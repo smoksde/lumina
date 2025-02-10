@@ -54,5 +54,58 @@ namespace lumina
             }
             return shaders;
         }
+
+        static std::unordered_map<std::string, glm::vec4> loadColors(const std::string& file_path)
+        {
+            std::ifstream file(file_path);
+            if (!file)
+            {
+                std::cerr << "Error: Could not open " << file_path << std::endl;
+                return {};
+            }
+
+            nlohmann::json root;
+            file >> root;
+
+            std::cout << "Loaded JSON: " << root.dump(4) << std::endl;
+            if (!root.contains("colors"))
+            {
+                std::cerr << "Error: 'colors' key not found in JSON file." << std::endl;
+                return {};
+            }
+
+            std::unordered_map<std::string, glm::vec4> colors;
+            for (const auto& [name, color] : root["colors"].items())
+            {
+                if (color.is_array() && color.size() == 4)
+                {
+                    // RGBA format
+                    colors[name] = glm::vec4(color[0], color[1], color[2], color[3]);
+                }
+                else if (color.is_string())
+                {
+                    colors[name] = hexToRGBA(color.get<std::string>());
+                }
+                else
+                {
+                    std::cerr << "Warning: Invalid color format for " << name << std::endl;
+                }
+            }
+            return colors;
+        }
+
+        private:
+
+        static glm::vec4 hexToRGBA(const std::string& hex)
+        {
+            if (hex.size() != 7 || hex[0] != '#')
+            {
+                std::cerr << "Error: Invalid hex color " << hex << std::endl;
+                return glm::vec4(1.0f);
+            }
+            int r, g, b;
+            sscanf(hex.c_str(), "#%02x%02x%02x", &r, &g, &b);
+            return glm::vec4(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        }
     };
 }
