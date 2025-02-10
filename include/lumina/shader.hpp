@@ -13,6 +13,7 @@ namespace lumina
     {
         public:
         GLuint shader_id;
+        std::unordered_map<std::string, GLint> uniform_locations;
 
         Shader(const std::unordered_map<std::string, std::string>& shader_paths)
         {
@@ -47,6 +48,8 @@ namespace lumina
 
             glLinkProgram(shader_id);
             checkLinkErrors(shader_id);
+
+            uniform_locations = getUniformLocations(shader_id);
 
             for (GLuint shader : compiled_shaders)
             {
@@ -122,7 +125,41 @@ namespace lumina
 
             return contents;
         }
-        
+
+        std::unordered_map<std::string, GLint> getUniformLocations(GLuint program)
+        {
+            std::unordered_map<std::string, GLint> uniform_locations;
+            GLint uniform_count;
+            glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &uniform_count);
+            
+            for (GLint i = 0; i < uniform_count; ++i)
+            {
+                char name[256];
+                GLsizei length;
+                GLint size;
+                GLenum type;
+                glGetActiveUniform(program, i, sizeof(name), &length, &size, &type, name);
+                GLint location = glGetUniformLocation(program, name);
+                if (location != -1)
+                {
+                    uniform_locations[name] = location;
+                }
+            }
+            return uniform_locations;
+        }
+
+        void setUniform(const std::string& name, float value)
+        {
+            if (uniform_locations.find(name) != uniform_locations.end())
+            {
+                glUniform1f(uniform_locations[name], value);
+            }
+            else
+            {
+                std::cerr << "Warning: Uniform '" << name << "' not found!" << std::endl;
+            }
+        }
+
         GLuint createShader(const char* vertex_shader_filename, const char* fragment_shader_filename = nullptr)
         {
             std::string vertex_shader_source = parse(vertex_shader_filename);
