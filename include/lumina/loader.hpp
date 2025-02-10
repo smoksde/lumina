@@ -11,7 +11,7 @@ namespace lumina
     {
         public:
 
-        static std::unordered_map<std::string, std::shared_ptr<lumina::Shader>> loadShaders(const std::string& file_path)
+        static nlohmann::json loadJson(const std::string& file_path)
         {
             std::ifstream file(file_path);
             if (!file)
@@ -19,9 +19,22 @@ namespace lumina
                 std::cerr << "Error: Could not open " << file_path << std::endl;
                 return {};
             }
-
             nlohmann::json root;
-            file >> root;
+            try
+            {
+                file >> root;
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+                return {};
+            }
+            return root;
+        }
+
+        static std::unordered_map<std::string, std::shared_ptr<lumina::Shader>> loadShaders(const std::string& file_path)
+        {
+            nlohmann::json root = loadJson(file_path);
 
             if (!root.contains("shaders"))
             {
@@ -55,19 +68,34 @@ namespace lumina
             return shaders;
         }
 
-        static std::unordered_map<std::string, glm::vec4> loadColors(const std::string& file_path)
+        static std::unordered_map<std::string, std::shared_ptr<lumina::Mesh>> loadMeshes(const std::string& file_path)
         {
-            std::ifstream file(file_path);
-            if (!file)
+            nlohmann::json root = loadJson(file_path);
+            if (!root.contains("meshes"))
             {
-                std::cerr << "Error: Could not open " << file_path << std::endl;
+                std::cerr << "Error: 'meshes' key not found in JSON file." << std::endl;
                 return {};
             }
 
-            nlohmann::json root;
-            file >> root;
+            std::unordered_map<std::string, std::shared_ptr<lumina::Mesh>> meshes;
 
-            std::cout << "Loaded JSON: " << root.dump(4) << std::endl;
+            for (const auto& [name, mesh_path] : root["meshes"].items())
+            {
+                if (!mesh_path.is_string())
+                {
+                    std::cerr << "Error: Mesh path for '" << mesh_path << "' in '" << name << "' is not a valid string." << std::endl;
+                    continue;
+                }
+                meshes[name] = GeometryLoader::loadGeometryFromFile(mesh_path);
+            }
+
+            return meshes;
+        }
+
+        static std::unordered_map<std::string, glm::vec4> loadColors(const std::string& file_path)
+        {
+            nlohmann::json root = loadJson(file_path);
+
             if (!root.contains("colors"))
             {
                 std::cerr << "Error: 'colors' key not found in JSON file." << std::endl;
