@@ -6,6 +6,7 @@
 #include "../libs/glm/ext/matrix_transform.hpp"
 #include "../libs/glm/gtc/matrix_transform.hpp"
 #include "../libs/glm/gtc/type_ptr.hpp"
+#include "../libs/glm/gtx/string_cast.hpp"
 
 #include "viewport.hpp"
 #include "shader.hpp"
@@ -18,7 +19,7 @@
 #include "terminal.hpp"
 #include "object.hpp"
 #include "geometry.hpp"
-#include "ui.hpp"
+#include "ui/ui.hpp"
 #include "loader.hpp"
 #include "time.hpp"
 
