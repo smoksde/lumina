@@ -8,12 +8,13 @@ class UIElement : public std::enable_shared_from_this<UIElement>
 {
     protected:
     bool active = true;
-    float min_x, min_y, max_x, max_y;
     std::string name = "";
     std::shared_ptr<UIElement> parent;
     std::unordered_map<std::string, std::shared_ptr<UIElement>> children;
 
     public:
+
+    float min_x, min_y, max_x, max_y;
     UIElement(std::string name, float min_x, float min_y, float max_x, float max_y)
     : name(name), min_x(min_x), min_y(min_y), max_x(max_x), max_y(max_y)
     {
