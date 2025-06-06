@@ -76,6 +76,11 @@ class UIButton : public UIElement
     {
         on_click = callback;
     }
+
+    void setLabel(std::string _label)
+    {
+        label = _label;
+    }
 };
 
 }
