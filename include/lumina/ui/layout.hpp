@@ -3,13 +3,14 @@
 #include "ui.hpp"
 
 namespace lumina {    
-
-class HorizontalLayout : public UIElement
+namespace ui
+{
+class HorizontalLayout : public Element
 {
 public:
     float gap = 0.0f;
     HorizontalLayout(std::string name, float min_x, float min_y, float max_x, float max_y, float gap)
-    : UIElement(name, min_x, min_y, max_x, max_y), gap(gap)
+    : Element(name, min_x, min_y, max_x, max_y), gap(gap)
     {
         
     }
@@ -34,12 +35,12 @@ public:
     }
 };
 
-class VerticalLayout : public UIElement
+class VerticalLayout : public Element
 {
 public:
     float gap = 0.0f;
     VerticalLayout(std::string name, float min_x, float min_y, float max_x, float max_y, float gap)
-    : UIElement(name, min_x, min_y, max_x, max_y), gap(gap)
+    : Element(name, min_x, min_y, max_x, max_y), gap(gap)
     {
         
     }
@@ -64,5 +65,5 @@ public:
         }
     }
 };
-
+}
 }

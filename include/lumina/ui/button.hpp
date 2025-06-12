@@ -3,8 +3,10 @@
 #include "utils.hpp"
 
 namespace lumina {
+namespace ui
+{
 
-class UIButton : public UIElement
+class Button : public Element
 {
     std::string label;
     std::function<void()> on_click;
@@ -18,8 +20,8 @@ class UIButton : public UIElement
     bool is_hovered = false;
 
     public:
-    UIButton(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, std::shared_ptr<lumina::Shader>& shader_ptr, std::shared_ptr<lumina::Font>& font_ptr, std::shared_ptr<lumina::Mesh>& mesh_ptr, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
-    : UIElement(name, min_x, min_y, max_x, max_y), label(label), shader_ptr(shader_ptr), font_ptr(font_ptr), mesh_ptr(mesh_ptr), color(color), text_color(text_color), hover_color(hover_color), highlight_color(highlight_color)
+    Button(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, std::shared_ptr<lumina::Shader>& shader_ptr, std::shared_ptr<lumina::Font>& font_ptr, std::shared_ptr<lumina::Mesh>& mesh_ptr, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
+    : Element(name, min_x, min_y, max_x, max_y), label(label), shader_ptr(shader_ptr), font_ptr(font_ptr), mesh_ptr(mesh_ptr), color(color), text_color(text_color), hover_color(hover_color), highlight_color(highlight_color)
     {
         
     }
@@ -52,7 +54,7 @@ class UIButton : public UIElement
         font_ptr->drawString(text_x, text_y, label.c_str(), text_color);
         font_ptr->shader_ptr->unbind();
 
-        UIElement::render(window_width, window_height);
+        Element::render(window_width, window_height);
     }
 
     void handleEvent(SDL_Event& event, int window_width, int window_height) override
@@ -69,7 +71,7 @@ class UIButton : public UIElement
         {
             if (is_hovered && on_click) on_click();
         }
-        UIElement::handleEvent(event, window_width, window_height);
+        Element::handleEvent(event, window_width, window_height);
     }
 
     void setOnClick(const std::function<void()>& callback)
@@ -83,4 +85,5 @@ class UIButton : public UIElement
     }
 };
 
+}
 }

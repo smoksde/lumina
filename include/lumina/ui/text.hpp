@@ -3,14 +3,15 @@
 #include "utils.hpp"
 
 namespace lumina {
-    
+namespace ui
+{
 enum TextAlignment
 {
     CENTERED,
     LEFT
 };
 
-class UIText : public UIElement
+class Text : public Element
 {
     std::string text = "";
     TextAlignment text_alignment = TextAlignment::CENTERED;
@@ -21,12 +22,12 @@ class UIText : public UIElement
 
     public:
     
-    UIText(std::string name, float min_x, float min_y, float max_x, float max_y,
+    Text(std::string name, float min_x, float min_y, float max_x, float max_y,
     std::shared_ptr<lumina::Shader>& shader_ptr,
     std::shared_ptr<lumina::Font>& font_ptr,
     glm::vec4 text_color
     )
-    : UIElement(name, min_x, min_y, max_x, max_y),
+    : Element(name, min_x, min_y, max_x, max_y),
     shader_ptr(shader_ptr),
     font_ptr(font_ptr),
     text_color(text_color)
@@ -66,7 +67,7 @@ class UIText : public UIElement
         font_ptr->drawString(text_x, text_y, text.c_str(), text_color);
         font_ptr->shader_ptr->unbind();
 
-        UIElement::render(window_width, window_height);
+        Element::render(window_width, window_height);
     }
 
     void setText(std::string new_text)
@@ -85,7 +86,7 @@ class UIText : public UIElement
     }
 };
 
-class UITextLines : public UIElement
+class TextLines : public Element
 {
     public:
     std::vector<std::string> lines;
@@ -95,10 +96,10 @@ class UITextLines : public UIElement
     float line_spacing = 1.2f;
     bool focused = false;
 
-    UITextLines(std::string name, float min_x, float min_y, float max_x, float max_y,
+    TextLines(std::string name, float min_x, float min_y, float max_x, float max_y,
     std::shared_ptr<lumina::Shader>& shader_ptr, std::shared_ptr<lumina::Font>& font_ptr,
     glm::vec4 text_color)
-    : UIElement(name, min_x, min_y, max_x, max_y),
+    : Element(name, min_x, min_y, max_x, max_y),
     shader_ptr(shader_ptr),
     font_ptr(font_ptr),
     text_color(text_color)
@@ -128,7 +129,7 @@ class UITextLines : public UIElement
         }
 
         font_ptr->shader_ptr->unbind();
-        UIElement::render(window_width, window_height);
+        Element::render(window_width, window_height);
     }
 
     void handleEvent(SDL_Event& event, int window_width, int window_height)
@@ -158,11 +159,11 @@ class UITextLines : public UIElement
         {
             lines.back().pop_back();
         }
-        UIElement::handleEvent(event, window_width, window_height);
+        Element::handleEvent(event, window_width, window_height);
     }
 };
 
-class UITextField : public UIElement
+class TextField : public Element
 {
     std::string text;
     glm::vec4 color;
@@ -177,7 +178,7 @@ class UITextField : public UIElement
 
     public:
     
-    UITextField(std::string name, float min_x, float min_y, float max_x, float max_y,
+    TextField(std::string name, float min_x, float min_y, float max_x, float max_y,
     std::shared_ptr<lumina::Shader>& shader_ptr,
     std::shared_ptr<lumina::Font>& font_ptr,
     std::shared_ptr<lumina::Mesh>& mesh_ptr,
@@ -185,7 +186,7 @@ class UITextField : public UIElement
     glm::vec4& text_color,
     glm::vec4& hover_color
     )
-    : UIElement(name, min_x, min_y, max_x, max_y),
+    : Element(name, min_x, min_y, max_x, max_y),
     shader_ptr(shader_ptr),
     font_ptr(font_ptr),
     mesh_ptr(mesh_ptr),
@@ -215,7 +216,7 @@ class UITextField : public UIElement
         font_ptr->drawString(text_x, text_y, text.c_str(), text_color);
         font_ptr->shader_ptr->unbind();
 
-        UIElement::render(window_width, window_height);
+        Element::render(window_width, window_height);
     }
 
     void handleEvent(SDL_Event& event, int window_width, int window_height) override
@@ -239,7 +240,7 @@ class UITextField : public UIElement
             text.pop_back();
         }
 
-        UIElement::handleEvent(event, window_width, window_height);
+        Element::handleEvent(event, window_width, window_height);
     }
 
     std::string getText()
@@ -247,5 +248,5 @@ class UITextField : public UIElement
         return text;
     }
 };
-
+}
 }

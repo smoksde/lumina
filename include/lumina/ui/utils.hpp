@@ -1,7 +1,8 @@
 #pragma once
 
 namespace lumina {
-
+namespace ui
+{
 inline bool isPointInside(int mouse_x, int mouse_y, glm::vec4& bounds, int window_width, int window_height)
 {
     float gl_mouse_x = float(mouse_x) / float(window_width);
@@ -41,5 +42,5 @@ inline void drawUIRectangle(float min_x, float min_y, float max_x, float max_y, 
     mesh_ptr->unbind();
     shader_ptr->bind();
 }
-
+}
 }

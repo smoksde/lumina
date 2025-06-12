@@ -3,19 +3,20 @@
 #include "utils.hpp"
 
 namespace lumina {
-
-class UIElement : public std::enable_shared_from_this<UIElement>
+namespace ui
+{
+class Element : public std::enable_shared_from_this<Element>
 {
     protected:
     bool active = true;
     std::string name = "";
-    std::shared_ptr<UIElement> parent;
-    std::unordered_map<std::string, std::shared_ptr<UIElement>> children;
+    std::shared_ptr<Element> parent;
+    std::unordered_map<std::string, std::shared_ptr<Element>> children;
 
     public:
 
     float min_x, min_y, max_x, max_y;
-    UIElement(std::string name, float min_x, float min_y, float max_x, float max_y)
+    Element(std::string name, float min_x, float min_y, float max_x, float max_y)
     : name(name), min_x(min_x), min_y(min_y), max_x(max_x), max_y(max_y)
     {
     }
@@ -29,7 +30,7 @@ class UIElement : public std::enable_shared_from_this<UIElement>
             throw std::runtime_error("Child with ID/Name '" + child->name + "' already exists!");
         }
 
-        children[child->name] = std::static_pointer_cast<UIElement>(child);
+        children[child->name] = std::static_pointer_cast<Element>(child);
         child->parent = shared_from_this();
     }
 
@@ -80,5 +81,5 @@ class UIElement : public std::enable_shared_from_this<UIElement>
         return {abs_min_x, abs_min_y, abs_max_x, abs_max_y};
     }
 };
-
+}
 }
