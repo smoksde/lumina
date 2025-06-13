@@ -25,7 +25,7 @@
 
 namespace lumina
 {
-    SDL_Window* createWindow(const char* title, int width, int height, int x, int y) {
+    inline SDL_Window* createWindow(const char* title, int width, int height, int x, int y) {
         SDL_Window* window = SDL_CreateWindow(title, x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
         if (!window) {
             std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
@@ -35,7 +35,7 @@ namespace lumina
         return window;
     }
 
-    int initSDL(SDL_Window*& window, SDL_GLContext& gl_context)
+    inline int initSDL(SDL_Window*& window, SDL_GLContext& gl_context)
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;

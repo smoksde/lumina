@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 #include <memory>
 
-#define STB_TRUETYPE_IMPLEMENTATION // if cpp then this in cpp
 #include "../libs/stb/stb_truetype.h"
 #include "../libs/glm/glm.hpp"
 
