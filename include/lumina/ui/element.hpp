@@ -67,6 +67,22 @@ class Element : public std::enable_shared_from_this<Element>
         for (const auto& [name, child] : children) child->handleEvent(event, window_width, window_height);
     }
 
+    virtual bool isMouseOver(int mouse_x, int mouse_y, int window_width, int window_height)
+    {
+        if (!active) return false;
+
+        glm::vec4 bounds = getAbsoluteBounds();
+        bool inside = isPointInside(mouse_x, mouse_y, bounds, window_width, window_height);
+        for (const auto& [name, child] : children)
+        {
+            if (child->isMouseOver(mouse_x, mouse_y, window_width, window_height))
+            {
+                return true;
+            }
+        }
+        return inside;
+    }
+
     glm::vec4 getAbsoluteBounds()
     {
         float abs_min_x = min_x, abs_min_y = min_y, abs_max_x = max_x, abs_max_y = max_y;
