@@ -9,5 +9,6 @@
 #include "canvas.hpp"
 #include "text.hpp"
 #include "layout.hpp"
+#include "list.hpp"
 
 #include "utils.hpp"

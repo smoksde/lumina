@@ -17,7 +17,6 @@ class Button : public Element
     glm::vec4 text_color;
     glm::vec4 hover_color;
     glm::vec4 highlight_color;
-    bool is_hovered = false;
 
     public:
     Button(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, std::shared_ptr<lumina::Shader>& shader_ptr, std::shared_ptr<lumina::Font>& font_ptr, std::shared_ptr<lumina::Mesh>& mesh_ptr, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
@@ -60,13 +59,7 @@ class Button : public Element
     void handleEvent(SDL_Event& event, int window_width, int window_height) override
     {
         if (!active) return;
-        glm::vec4 bounds = getAbsoluteBounds();
-        if (event.type == SDL_MOUSEMOTION)
-        {
-            int mouse_x = event.motion.x;
-            int mouse_y = event.motion.y;
-            is_hovered = isPointInside(mouse_x, mouse_y, bounds, window_width, window_height);
-        }
+        
         if (event.type == SDL_MOUSEBUTTONDOWN)
         {
             if (is_hovered && on_click) on_click();

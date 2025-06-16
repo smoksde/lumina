@@ -13,6 +13,8 @@ class Element : public std::enable_shared_from_this<Element>
     std::shared_ptr<Element> parent;
     std::unordered_map<std::string, std::shared_ptr<Element>> children;
 
+    bool is_hovered = false;
+
     public:
 
     float min_x, min_y, max_x, max_y;
@@ -64,6 +66,13 @@ class Element : public std::enable_shared_from_this<Element>
     virtual void handleEvent(SDL_Event& event, int window_width, int window_height)
     {
         if (!active) return;
+        glm::vec4 bounds = getAbsoluteBounds();
+        if (event.type == SDL_MOUSEMOTION)
+        {
+            int mouse_x = event.motion.x;
+            int mouse_y = event.motion.y;
+            is_hovered = isPointInside(mouse_x, mouse_y, bounds, window_width, window_height);
+        }
         for (const auto& [name, child] : children) child->handleEvent(event, window_width, window_height);
     }
 
