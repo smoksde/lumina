@@ -9,65 +9,44 @@ namespace lumina
     class Mesh
     {
     private:
-        std::shared_ptr<std::vector<float>> vertices;
+        std::shared_ptr<std::vector<float>> positions;
+        std::shared_ptr<std::vector<float>> uvs;
+
         std::shared_ptr<std::vector<unsigned int>> indices;
 
         std::vector<float> interleaved_vertices;
+        unsigned int vertex_stride = 0;
 
         unsigned int num_vertices;
         unsigned int num_indices;
 
-        unsigned int EBO, VBO, VAO;
+        unsigned int EBO = 0, VBO = 0, VAO = 0;
 
-        void computeNormals()
+        void interleave()
         {
-            std::vector<glm::vec3> positions;
-            positions.reserve(num_vertices);
-            for (size_t i = 0; i < num_vertices; i+=3)
-            {
-                positions.emplace_back((*vertices)[i], (*vertices)[i+1], (*vertices)[i+2]);
-            }
-
-            std::vector<glm::vec3> normals(num_vertices, glm::vec3(0.0f));
-
-            for (size_t i = 0; i < indices->size(); i+=3)
-            {
-                unsigned int i0 = (*indices)[i];
-                unsigned int i1 = (*indices)[i+1];
-                unsigned int i2 = (*indices)[i+2];
-                
-                glm::vec3& v0 = positions[i0];
-                glm::vec3& v1 = positions[i1];
-                glm::vec3& v2 = positions[i2];
-
-                glm::vec3 edge1 = v1 - v0;
-                glm::vec3 edge2 = v2 - v0;
-                glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
-
-                normals[i0] += normal;
-                normals[i1] += normal;
-                normals[i2] += normal;
-            }
-
             interleaved_vertices.clear();
-            for (size_t i = 0; i < num_vertices; i++)
+            size_t count = positions->size() / 3;
+            vertex_stride = 3 + (uvs ? 2 : 0);
+
+            for (size_t i = 0; i < count; i++)
             {
-                glm::vec3 pos = positions[i];
-                glm::vec3 norm = glm::normalize(normals[i]);
+                // Position
+                interleaved_vertices.push_back((*positions)[i * 3 + 0]);
+                interleaved_vertices.push_back((*positions)[i * 3 + 1]);
+                interleaved_vertices.push_back((*positions)[i * 3 + 2]);
 
-                interleaved_vertices.push_back(pos.x);
-                interleaved_vertices.push_back(pos.y);
-                interleaved_vertices.push_back(pos.z);
-
-                interleaved_vertices.push_back(norm.x);
-                interleaved_vertices.push_back(norm.y);
-                interleaved_vertices.push_back(norm.z);
+                // UV (optional)
+                if (uvs && uvs->size() >= i * 2 + 2)
+                {
+                    interleaved_vertices.push_back((*uvs)[i * 2 + 0]);
+                    interleaved_vertices.push_back((*uvs)[i * 2 + 1]);
+                }
             }
         }
 
-        void setupMesh()
+        void setup()
         {
-            computeNormals();
+            interleave();
             
             glGenVertexArrays(1, &VAO);
             glGenBuffers(1, &VBO);
@@ -81,33 +60,49 @@ namespace lumina
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->size() * sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
 
-            // Position attribute (location = 0)
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-            
-            // Normal attribute (location = 1)
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(1); 
+            // Layout
+            int offset = 0;
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            // Position (location = 0)
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(offset * sizeof(float)));
+            glEnableVertexAttribArray(0);
+            offset += 3;
+
+            // UV (location = 1)
+            if (uvs)
+            {
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(offset * sizeof(float)));
+                glEnableVertexAttribArray(1);
+                offset += 2;
+            }
+
+            // glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         }
 
     public:
-        Mesh(std::shared_ptr<std::vector<float>> vertices,
-            unsigned int num_vertices,
-            std::shared_ptr<std::vector<unsigned int>> indices,
-            unsigned int num_indices)
-        : vertices(vertices), num_vertices(num_vertices),
-          indices(indices), num_indices(num_indices)
+        Mesh(std::shared_ptr<std::vector<float>> positions,
+             std::shared_ptr<std::vector<unsigned int>> indices,
+             std::shared_ptr<std::vector<float>> uvs = nullptr)
+        : positions(positions), indices(indices), uvs(uvs)
         {
-            setupMesh();
+            num_vertices = static_cast<unsigned int>(positions->size() / 3);
+            num_indices = static_cast<unsigned int>(indices->size());
+            setup();
+        }
+
+        ~Mesh()
+        {
+            glDeleteBuffers(1, &VBO);
+            glDeleteBuffers(1, &EBO);
+            glDeleteVertexArrays(1, &VAO);
         }
 
         void bind() { glBindVertexArray(VAO); }
         void unbind() { glBindVertexArray(0); }
 
-        std::shared_ptr<std::vector<float>> getVertices() const { return vertices; }
+        std::shared_ptr<std::vector<float>> getPositions() const { return positions; }
+        std::shared_ptr<std::vector<float>> getUVs() const { return uvs; }
         std::shared_ptr<std::vector<unsigned int>> getIndices() const { return indices; }
 
         unsigned int getNumVertices() const { return num_vertices; }
