@@ -21,7 +21,8 @@
 #include "geometry.hpp"
 #include "ui/ui.hpp"
 #include "loader.hpp"
-#include "time.hpp"
+#include "time/time.hpp"
+#include "time/timer.hpp"
 
 namespace lumina
 {
