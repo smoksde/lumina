@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils.hpp"
+#include "context.hpp"
 
 namespace lumina {
 namespace ui
@@ -19,8 +20,8 @@ class Button : public Element
     glm::vec4 highlight_color;
 
     public:
-    Button(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, std::shared_ptr<lumina::Shader>& shader_ptr, std::shared_ptr<lumina::Font>& font_ptr, std::shared_ptr<lumina::Mesh>& mesh_ptr, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
-    : Element(name, min_x, min_y, max_x, max_y), label(label), shader_ptr(shader_ptr), font_ptr(font_ptr), mesh_ptr(mesh_ptr), color(color), text_color(text_color), hover_color(hover_color), highlight_color(highlight_color)
+    Button(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, lumina::ui::Context& style, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
+    : Element(name, min_x, min_y, max_x, max_y), label(label), shader_ptr(style.shader_ptr), font_ptr(style.font_ptr), mesh_ptr(style.mesh_ptr), color(color), text_color(text_color), hover_color(hover_color), highlight_color(highlight_color)
     {
         
     }

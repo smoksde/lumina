@@ -10,5 +10,6 @@
 #include "text.hpp"
 #include "layout.hpp"
 #include "list.hpp"
+#include "context.hpp"
 
 #include "utils.hpp"
