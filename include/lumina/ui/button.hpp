@@ -2,6 +2,7 @@
 
 #include "utils.hpp"
 #include "context.hpp"
+#include "action.hpp"
 
 namespace lumina {
 namespace ui
@@ -71,6 +72,11 @@ class Button : public Element
     void setOnClick(const std::function<void()>& callback)
     {
         on_click = callback;
+    }
+
+    void setOnClick(const std::string& action_name)
+    {
+        on_click = lumina::ui::ActionRegistry::instance().get(action_name);
     }
 
     void setLabel(std::string _label)
