@@ -12,5 +12,6 @@
 #include "list.hpp"
 #include "context.hpp"
 #include "action.hpp"
+#include "factory.hpp"
 
 #include "utils.hpp"

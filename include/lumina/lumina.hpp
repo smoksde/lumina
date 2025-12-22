@@ -8,6 +8,8 @@
 #include "../libs/glm/gtc/type_ptr.hpp"
 #include "../libs/glm/gtx/string_cast.hpp"
 
+#include "../libs/json.hpp"
+
 #include "viewport.hpp"
 #include "shader.hpp"
 #include "defines.hpp"
