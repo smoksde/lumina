@@ -14,5 +14,7 @@
 #include "action.hpp"
 #include "factory.hpp"
 #include "system.hpp"
+#include "loader.hpp"
+#include "watcher.hpp"
 
 #include "utils.hpp"
