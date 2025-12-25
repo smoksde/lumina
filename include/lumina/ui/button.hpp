@@ -32,28 +32,10 @@ class Button : public Element
         if (!active) return;
         glm::vec4 bounds = getAbsoluteBounds();
         glm::vec4 current_color = is_hovered ? hover_color : color;
-        float delta_x = bounds.z - bounds.x;
-        float delta_y = bounds.w - bounds.y;
         float ratio = float(window_height) / float(window_width);
         if (is_hovered) drawUIRectangle(bounds.x - (0.01f * ratio), bounds.y - 0.01f, bounds.z + (0.01f * ratio), bounds.w + 0.01f, shader_ptr, mesh_ptr, highlight_color, window_width, window_height);
         drawUIRectangle(bounds.x, bounds.y, bounds.z, bounds.w, shader_ptr, mesh_ptr, current_color, window_width, window_height);
-        //drawText(label, bounds.x + 0.05f, bounds.y + 0.05f);
-        
-        glm::vec2 text_size = font_ptr->measureString(label.c_str());
-
-        float text_x = (bounds.x + bounds.z) / 2.0f * window_width;
-        float text_y = (bounds.y + bounds.w) / 2.0f * window_height;
-
-        text_x -= text_size.x / 2.0f;
-        text_y += text_size.y / 2.0f;
-
-        font_ptr->shader_ptr->bind();
-
-        glUniform4f(glGetUniformLocation(font_ptr->shader_ptr->shader_id, "u_color"), 1.0f, 1.0f, 1.0f, 1.0f);
-        glm::mat4 ortho = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f);
-        glUniformMatrix4fv(glGetUniformLocation(font_ptr->shader_ptr->shader_id, "u_modelViewProj"), 1, GL_FALSE, glm::value_ptr(ortho));
-        font_ptr->drawString(text_x, text_y, label.c_str(), text_color);
-        font_ptr->shader_ptr->unbind();
+        drawText(label, bounds, *font_ptr, text_color, window_width, window_height, TextAlign::Center);
 
         Element::render(window_width, window_height);
     }
