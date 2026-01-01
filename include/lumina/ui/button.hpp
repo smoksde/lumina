@@ -11,6 +11,8 @@ namespace ui
 class Button : public Element
 {
     std::string label;
+    std::shared_ptr<lumina::Texture> icon;
+
     std::function<void()> on_click;
     std::shared_ptr<lumina::Shader>& shader_ptr;
     std::shared_ptr<lumina::Font>& font_ptr;
@@ -27,6 +29,11 @@ class Button : public Element
         
     }
 
+    void setIcon(std::shared_ptr<lumina::Texture> tex)
+    {
+        icon = tex;
+    }
+
     void render(int window_width, int window_height) override
     {
         if (!active) return;
@@ -35,6 +42,16 @@ class Button : public Element
         float ratio = float(window_height) / float(window_width);
         if (is_hovered) drawUIRectangle(bounds.x - (0.01f * ratio), bounds.y - 0.01f, bounds.z + (0.01f * ratio), bounds.w + 0.01f, shader_ptr, mesh_ptr, highlight_color, window_width, window_height);
         drawUIRectangle(bounds.x, bounds.y, bounds.z, bounds.w, shader_ptr, mesh_ptr, current_color, window_width, window_height);
+        
+        
+        if (icon)
+        {
+            float size = 0.6f * (bounds.z - bounds.x); // 60% of button width
+            glm::vec2 center = { (bounds.x + bounds.z) / 2, (bounds.y + bounds.w) / 2 };
+            drawUITexture(bounds.x, bounds.y, bounds.z, bounds.w,
+                  shader_ptr, mesh_ptr, icon, window_width, window_height);
+        }
+        
         drawText(label, bounds, *font_ptr, text_color, window_width, window_height, TextAlign::Center);
 
         Element::render(window_width, window_height);

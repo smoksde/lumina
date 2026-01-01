@@ -21,6 +21,7 @@
 #include "terminal.hpp"
 #include "object.hpp"
 #include "geometry.hpp"
+#include "texture.hpp"
 #include "ui/ui.hpp"
 #include "loader.hpp"
 #include "time/time.hpp"

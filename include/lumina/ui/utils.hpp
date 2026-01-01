@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 namespace lumina::ui {
 
 enum class TextAlign {
@@ -53,6 +54,39 @@ inline void drawUIRectangle(float min_x, float min_y, float max_x, float max_y, 
     shader_ptr->bind();
 }
 
+inline void drawUITexture(float min_x, float min_y, float max_x, float max_y,
+                          std::shared_ptr<lumina::Shader>& shader_ptr,
+                          std::shared_ptr<lumina::Mesh>& mesh_ptr,
+                          std::shared_ptr<lumina::Texture>& texture_ptr,
+                          int window_width, int window_height)
+{
+    if (!texture_ptr) return;
+
+    shader_ptr->bind();
+    mesh_ptr->bind();
+    texture_ptr->bind(0); // bind to texture unit 0
+
+    int tex_loc = glGetUniformLocation(shader_ptr->shader_id, "u_texture");
+    glUniform1i(tex_loc, 0);
+
+    glm::mat4 transform = glm::mat4(1.0f);
+    float center_x = (min_x + max_x) / 2.0f;
+    float center_y = (min_y + max_y) / 2.0f;
+    float scale_x = (max_x - min_x);
+    float scale_y = (max_y - min_y);
+
+    transform = glm::translate(transform, glm::vec3(center_x * 2.0f - 1.0f, -(center_y * 2.0f - 1.0f), 0.0f));
+    transform = glm::scale(transform, glm::vec3(scale_x * 2.0f, scale_y * 2.0f, 1.0f));
+
+    int transform_loc = glGetUniformLocation(shader_ptr->shader_id, "transform");
+    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    texture_ptr->unbind();
+    mesh_ptr->unbind();
+    shader_ptr->unbind();
+}
 
 
 inline void drawText(const ::std::string& text, const glm::vec4& bounds, lumina::Font& font, glm::vec4& color, int with, int height, lumina::ui::TextAlign align = lumina::ui::TextAlign::Center)
