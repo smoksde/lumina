@@ -47,6 +47,16 @@ class Element : public std::enable_shared_from_this<Element>
         throw std::runtime_error("Child with name '" + name + "' does not exist!");
     }
 
+    template <typename T = Element>
+    std::shared_ptr<T> findChild(const std::string& name)
+    {
+        auto it = children.find(name);
+        if (it != children.end())
+            return std::dynamic_pointer_cast<T>(it->second);
+        return nullptr;
+    }
+
+
     void setActive(bool new_active)
     {
         active = new_active;
