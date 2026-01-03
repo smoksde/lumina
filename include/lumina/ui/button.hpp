@@ -15,6 +15,7 @@ class Button : public Element
 
     std::function<void()> on_click;
     std::shared_ptr<lumina::Shader>& shader_ptr;
+    std::shared_ptr<lumina::Shader>& texture_shader_ptr;
     std::shared_ptr<lumina::Font>& font_ptr;
     std::shared_ptr<lumina::Mesh>& mesh_ptr;
     glm::vec4 color;
@@ -24,7 +25,16 @@ class Button : public Element
 
     public:
     Button(std::string name, float min_x, float min_y, float max_x, float max_y, const std::string& label, lumina::ui::Context& style, glm::vec4& color, glm::vec4& text_color, glm::vec4& hover_color, glm::vec4& highlight_color)
-    : Element(name, min_x, min_y, max_x, max_y), label(label), shader_ptr(style.shader_ptr), font_ptr(style.font_ptr), mesh_ptr(style.mesh_ptr), color(color), text_color(text_color), hover_color(hover_color), highlight_color(highlight_color)
+    : Element(name, min_x, min_y, max_x, max_y), 
+    label(label),
+    shader_ptr(style.shader_ptr),
+    texture_shader_ptr(style.texture_shader_ptr),
+    font_ptr(style.font_ptr),
+    mesh_ptr(style.mesh_ptr),
+    color(color),
+    text_color(text_color),
+    hover_color(hover_color),
+    highlight_color(highlight_color)
     {
         
     }
@@ -44,13 +54,36 @@ class Button : public Element
         drawUIRectangle(bounds.x, bounds.y, bounds.z, bounds.w, shader_ptr, mesh_ptr, current_color, window_width, window_height);
         
         
+        // Draw icon with correct aspect ratio and pixel-perfect scaling
         if (icon)
         {
-            float size = 0.6f * (bounds.z - bounds.x); // 60% of button width
-            glm::vec2 center = { (bounds.x + bounds.z) / 2, (bounds.y + bounds.w) / 2 };
-            drawUITexture(bounds.x, bounds.y, bounds.z, bounds.w,
-                  shader_ptr, mesh_ptr, icon, window_width, window_height);
+            int tex_w = icon->getWidth();
+            int tex_h = icon->getHeight();
+
+            // Button size in pixels
+            float button_w_px = (bounds.z - bounds.x) * window_width;
+            float button_h_px = (bounds.w - bounds.y) * window_height;
+
+            // Scale factor to fit texture inside button
+            float scale = std::min(button_w_px / tex_w, button_h_px / tex_h);
+
+            float draw_w_px = tex_w * scale;
+            float draw_h_px = tex_h * scale;
+
+            // Center in button
+            float center_x_px = (bounds.x + bounds.z) * 0.5f * window_width;
+            float center_y_px = (bounds.y + bounds.w) * 0.5f * window_height;
+
+            // Compute normalized coordinates for drawUITexture
+            float draw_min_x = (center_x_px - draw_w_px / 2.0f) / window_width;
+            float draw_max_x = (center_x_px + draw_w_px / 2.0f) / window_width;
+            float draw_min_y = (center_y_px - draw_h_px / 2.0f) / window_height;
+            float draw_max_y = (center_y_px + draw_h_px / 2.0f) / window_height;
+
+            drawUITexture(draw_min_x, draw_min_y, draw_max_x, draw_max_y,
+                        texture_shader_ptr, mesh_ptr, icon, window_width, window_height);
         }
+
         
         drawText(label, bounds, *font_ptr, text_color, window_width, window_height, TextAlign::Center);
 

@@ -122,6 +122,50 @@ namespace lumina
             return colors;
         }
 
+        static std::unordered_map<std::string, std::shared_ptr<lumina::Texture>>
+        loadTextures(const std::string& directory)
+        {
+            namespace fs = std::filesystem;
+            std::unordered_map<std::string, std::shared_ptr<lumina::Texture>> textures;
+            if (!fs::exists(directory) || !fs::is_directory(directory))
+            {
+                std::cerr << "Error: Texture directory does not exist: "
+                << directory << std::endl;
+                return textures;
+            }
+
+            stbi_set_flip_vertically_on_load(true);
+
+            for (const auto& entry : fs::directory_iterator(directory))
+            {
+                if (!entry.is_regular_file())
+                    continue;
+
+                const fs::path& path = entry.path();
+                std::string ext = path.extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                // Supported formats
+                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".bmp")
+                    continue;
+
+                std::string name = path.stem().string(); // filename without extension
+
+                auto texture = std::make_shared<lumina::Texture>();
+                if (!texture->loadFromFile(path.string()))
+                {
+                    std::cerr << "Failed to load texture: " << path << std::endl;
+                    continue;
+                }
+
+                textures[name] = texture;
+
+                std::cout << "Loaded texture: " << name << " (" << path << ")\n";
+            }
+
+            return textures;
+        }
+
         private:
 
         static glm::vec4 hexToRGBA(const std::string& hex)

@@ -12,6 +12,7 @@ namespace ui
     struct Context
     {
         std::shared_ptr<::lumina::Shader> shader_ptr;
+        std::shared_ptr<::lumina::Shader> texture_shader_ptr;
         std::shared_ptr<::lumina::Font> font_ptr;
         std::shared_ptr<::lumina::Mesh> mesh_ptr;
     };

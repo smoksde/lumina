@@ -18,15 +18,17 @@ public:
     std::unordered_map<std::string, std::shared_ptr<lumina::Mesh>> meshes;
     std::unordered_map<std::string, glm::vec4> colors;
     std::shared_ptr<lumina::Font> font;
+    std::unordered_map<std::string, std::shared_ptr<lumina::Texture>> textures;
     lumina::ui::Context& context;  // Injected UI context
 
     Factory(
         const std::unordered_map<std::string, std::shared_ptr<lumina::Shader>>& shaders_,
         const std::unordered_map<std::string, std::shared_ptr<lumina::Mesh>>& meshes_,
         const std::unordered_map<std::string, glm::vec4>& colors_,
+        const std::unordered_map<std::string, std::shared_ptr<lumina::Texture>>& textures_,
         std::shared_ptr<lumina::Font> font_,
         lumina::ui::Context& context_)
-        : shaders(shaders_), meshes(meshes_), colors(colors_), font(font_), context(context_)
+        : shaders(shaders_), meshes(meshes_), colors(colors_), textures(textures_), font(font_), context(context_)
     {}
 
     std::shared_ptr<lumina::ui::Element> create(const nlohmann::json& j)
@@ -65,6 +67,21 @@ public:
 
             if (j.contains("onClick"))
                 button->setOnClick(j["onClick"]);
+
+            if (j.contains("icon"))
+            {
+                const std::string icon_name = j["icon"];
+                auto it = textures.find(icon_name);
+                if (it != textures.end())
+                {
+                    button->setIcon(it->second);
+                }
+                else
+                {
+                    std::cerr << "UIFactory: icon texture not found: "
+                    << icon_name << std::endl;
+                }
+            }
 
             return button;
         }
