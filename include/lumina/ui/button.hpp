@@ -83,9 +83,10 @@ class Button : public Element
             drawUITexture(draw_min_x, draw_min_y, draw_max_x, draw_max_y,
                         texture_shader_ptr, mesh_ptr, icon, window_width, window_height);
         }
-
-        
-        drawText(label, bounds, *font_ptr, text_color, window_width, window_height, TextAlign::Center);
+        else
+        {
+            drawText(label, bounds, *font_ptr, text_color, window_width, window_height, TextAlign::Center);
+        }
 
         Element::render(window_width, window_height);
     }
