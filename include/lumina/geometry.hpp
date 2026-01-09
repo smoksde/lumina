@@ -13,16 +13,18 @@ namespace lumina
         static std::shared_ptr<Mesh> loadGeometryFromFile(const std::string& filename)
         {
             std::vector<float> positions;
+            std::vector<float> colors;
             std::vector<float> uvs;
             std::vector<unsigned int> indices;
 
-            parseFile(filename, positions, uvs, indices);
+            parseFile(filename, positions, colors, uvs, indices);
 
             auto pos_ptr = std::make_shared<std::vector<float>>(positions);
             auto ind_ptr = std::make_shared<std::vector<unsigned int>>(indices);
+            std::shared_ptr<std::vector<float>> colors_ptr = colors.empty() ? nullptr : std::make_shared<std::vector<float>>(colors);
             std::shared_ptr<std::vector<float>> uvs_ptr = uvs.empty() ? nullptr : std::make_shared<std::vector<float>>(uvs);
 
-            return std::make_shared<Mesh>(pos_ptr, ind_ptr, uvs_ptr);
+            return std::make_shared<Mesh>(pos_ptr, ind_ptr, colors_ptr, uvs_ptr);
         }
 
         private:
@@ -36,6 +38,7 @@ namespace lumina
 
         static void parseFile(const std::string& filename,
                               std::vector<float>& positions,
+                              std::vector<float>& colors,
                               std::vector<float>& uvs,
                               std::vector<unsigned int>& indices)
         {
@@ -68,12 +71,27 @@ namespace lumina
                 switch (currentSection)
                 {
                     case Section::Positions: {
-                        float x, y, z;
+                        float x, y, z, r, g, b;
                         if (ss >> x >> y >> z)
                         {
                             positions.push_back(x);
                             positions.push_back(y);
                             positions.push_back(z);
+                            
+                            // Try to read color data (optional)
+                            if (ss >> r >> g >> b)
+                            {
+                                colors.push_back(r);
+                                colors.push_back(g);
+                                colors.push_back(b);
+                            }
+                            else
+                            {
+                                // Default to white if no color data
+                                colors.push_back(1.0f);
+                                colors.push_back(1.0f);
+                                colors.push_back(1.0f);
+                            }
                         }
                         break;
                     }

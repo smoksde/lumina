@@ -10,6 +10,7 @@ namespace lumina
     {
     private:
         std::shared_ptr<std::vector<float>> positions;
+        std::shared_ptr<std::vector<float>> colors;
         std::shared_ptr<std::vector<float>> uvs;
 
         std::shared_ptr<std::vector<unsigned int>> indices;
@@ -26,7 +27,7 @@ namespace lumina
         {
             interleaved_vertices.clear();
             size_t count = positions->size() / 3;
-            vertex_stride = 3 + (uvs ? 2 : 0);
+            vertex_stride = 3 + (colors ? 3 : 0) + (uvs ? 2 : 0);
 
             for (size_t i = 0; i < count; i++)
             {
@@ -34,6 +35,14 @@ namespace lumina
                 interleaved_vertices.push_back((*positions)[i * 3 + 0]);
                 interleaved_vertices.push_back((*positions)[i * 3 + 1]);
                 interleaved_vertices.push_back((*positions)[i * 3 + 2]);
+
+                // Color (optional)
+                if (colors && colors->size() >= i * 3 + 3)
+                {
+                    interleaved_vertices.push_back((*colors)[i * 3 + 0]);
+                    interleaved_vertices.push_back((*colors)[i * 3 + 1]);
+                    interleaved_vertices.push_back((*colors)[i * 3 + 2]);
+                }
 
                 // UV (optional)
                 if (uvs && uvs->size() >= i * 2 + 2)
@@ -68,11 +77,19 @@ namespace lumina
             glEnableVertexAttribArray(0);
             offset += 3;
 
-            // UV (location = 1)
+            // Color (location = 1)
+            if (colors)
+            {
+                glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(offset * sizeof(float)));
+                glEnableVertexAttribArray(1);
+                offset += 3;
+            }
+
+            // UV (location = 2)
             if (uvs)
             {
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(offset * sizeof(float)));
-                glEnableVertexAttribArray(1);
+                glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(offset * sizeof(float)));
+                glEnableVertexAttribArray(2);
                 offset += 2;
             }
 
@@ -83,8 +100,9 @@ namespace lumina
     public:
         Mesh(std::shared_ptr<std::vector<float>> positions,
              std::shared_ptr<std::vector<unsigned int>> indices,
+             std::shared_ptr<std::vector<float>> colors = nullptr,
              std::shared_ptr<std::vector<float>> uvs = nullptr)
-        : positions(positions), indices(indices), uvs(uvs)
+        : positions(positions), indices(indices), colors(colors), uvs(uvs)
         {
             num_vertices = static_cast<unsigned int>(positions->size() / 3);
             num_indices = static_cast<unsigned int>(indices->size());
@@ -102,6 +120,7 @@ namespace lumina
         void unbind() { glBindVertexArray(0); }
 
         std::shared_ptr<std::vector<float>> getPositions() const { return positions; }
+        std::shared_ptr<std::vector<float>> getColors() const { return colors; }
         std::shared_ptr<std::vector<float>> getUVs() const { return uvs; }
         std::shared_ptr<std::vector<unsigned int>> getIndices() const { return indices; }
 
