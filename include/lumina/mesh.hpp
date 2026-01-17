@@ -119,6 +119,20 @@ namespace lumina
         void bind() { glBindVertexArray(VAO); }
         void unbind() { glBindVertexArray(0); }
 
+        void draw() const
+        {
+            glBindVertexArray(VAO);
+            if (indices && !indices->empty())
+            {
+                glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
+            }
+            else
+            {
+                glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+            }
+            glBindVertexArray(0);
+        }
+
         std::shared_ptr<std::vector<float>> getPositions() const { return positions; }
         std::shared_ptr<std::vector<float>> getColors() const { return colors; }
         std::shared_ptr<std::vector<float>> getUVs() const { return uvs; }

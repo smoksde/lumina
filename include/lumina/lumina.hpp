@@ -12,6 +12,8 @@
 
 #include "viewport.hpp"
 #include "shader.hpp"
+#include "material.hpp"
+#include "renderable.hpp"
 #include "defines.hpp"
 #include "utils.hpp"
 #include "camera.hpp"

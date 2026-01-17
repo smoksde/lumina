@@ -70,6 +70,48 @@ namespace lumina
             glUseProgram(0);
         }
 
+        void setInt(const std::string& name, int value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniform1i(it->second, value);
+        }
+
+        void setFloat(const std::string& name, float value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniform1f(it->second, value);
+        }
+
+        void setVec2(const std::string& name, const glm::vec2& value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniform2fv(it->second, 1, glm::value_ptr(value));
+        }
+
+        void setVec3(const std::string& name, const glm::vec3& value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniform3fv(it->second, 1, glm::value_ptr(value));
+        }
+
+        void setVec4(const std::string& name, const glm::vec4& value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniform4fv(it->second, 1, glm::value_ptr(value));
+        }
+
+        void setMat4(const std::string& name, const glm::mat4& value)
+        {
+            auto it = uniform_locations.find(name);
+            if (it != uniform_locations.end())
+                glUniformMatrix4fv(it->second, 1, GL_FALSE, glm::value_ptr(value));
+        }
+
     private:
 
         GLuint compile(std::string shader_source, GLenum type)
@@ -159,6 +201,8 @@ namespace lumina
                 std::cerr << "Warning: Uniform '" << name << "' not found!" << std::endl;
             }
         }
+
+
 
         GLuint createShader(const char* vertex_shader_filename, const char* fragment_shader_filename = nullptr)
         {
