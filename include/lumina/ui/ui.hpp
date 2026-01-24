@@ -9,6 +9,7 @@
 #include "canvas.hpp"
 #include "text.hpp"
 #include "layout.hpp"
+#include "textlist.hpp"
 #include "list.hpp"
 #include "context.hpp"
 #include "action.hpp"
