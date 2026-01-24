@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 namespace lumina
 {
     class GeometryLoader

@@ -28,24 +28,12 @@ namespace lumina
             {
                 if (!shader) return;
                 shader->bind();
-                shader->setMat4("model", model);
+                shader->setUniform("model", model);
 
                 for (const auto& [name, val] : uniforms)
                 {
                     std::visit([&](auto&& v) {
-                        using T = std::decay_t<decltype(v)>;
-                        if constexpr (std::is_same_v<T, int>)
-                            shader->setInt(name, v);
-                        else if constexpr (std::is_same_v<T, float>)
-                            shader->setFloat(name, v);
-                        else if constexpr (std::is_same_v<T, glm::vec2>)
-                            shader->setVec2(name, v);
-                        else if constexpr (std::is_same_v<T, glm::vec3>)
-                            shader->setVec3(name, v);
-                        else if constexpr (std::is_same_v<T, glm::vec4>)
-                            shader->setVec4(name, v);
-                        else if constexpr (std::is_same_v<T, glm::mat4>)
-                            shader->setMat4(name, v);
+                        shader->setUniform(name, v);
                     }, val);
                 }
             }

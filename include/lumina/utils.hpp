@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <random>
 #include <sstream>
+#include <fstream>
 
 namespace lumina
 {
