@@ -147,6 +147,11 @@ private:
 // ----------------------------
 
 template<>
+inline void Shader::setUniform<bool>(const std::string& name, const bool& value) {
+    glUniform1i(getUniformLocation(name), static_cast<int>(value));
+}
+
+template<>
 inline void Shader::setUniform<int>(const std::string& name, const int& value) {
     glUniform1i(getUniformLocation(name), value);
 }
